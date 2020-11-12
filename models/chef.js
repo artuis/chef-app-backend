@@ -6,14 +6,20 @@ const chefSchema = new Schema({
         first: { type: String, required: true, trim: true },
         last: { type: String, required: true, trim: true }
     },
-    bio : { type: String},
+    bio : { type: String },
     cuisine : [
         { 
             type: [Schema.Types.ObjectId],
             ref: "Cuisine"
         }
     ],
-    restaurants : { type : String, required: true},
+    specialty : [
+        { 
+            type: [Schema.Types.ObjectId],
+            ref: "Specialty"
+        }
+    ],
+    restaurants : { type : String, required: true },
     bioPic : { type : String },
     contactInfo : {
         type : Map,

@@ -20,15 +20,18 @@ const cuisineSeed = [
     {name: "Indian"},
     {name: "Italian"},
     {name: "Japanese"},
-    {name: "Keto"},
     {name: "Korean"},
     {name: "Mediterranean"},
     {name: "Mexican"},
     {name: "Thai"},
-    {name: "Vegan"},
-    {name: "Vegetarian"},
     {name: "Vietnamese"}
 ];
+const specialtySeed = [
+    {name: "Keto"},
+    {name: "Gluten-Free"},
+    {name: "Vegan"},
+    {name: "Vegetarian"},
+]
 const serviceTypeSeed = [
     {name: "Hourly"}, 
     {name: "Per Meal"},
@@ -39,6 +42,16 @@ const serviceTypeSeed = [
 // const clientSeed = []
 
 db.Cuisine.deleteMany({})
+    .then(() => db.Cuisine.insertMany(cuisineSeed))
+    .then(data => {
+        console.log(data.length + " cuisine records inserted!");
+        process.exit(0);
+    })
+    .catch(err => {
+        console.error(err);
+        process.exit(1);
+    });
+db.Specialty.deleteMany({})
     .then(() => db.Cuisine.insertMany(cuisineSeed))
     .then(data => {
         console.log(data.length + " cuisine records inserted!");
