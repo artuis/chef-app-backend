@@ -52,9 +52,9 @@ db.Cuisine.deleteMany({})
         process.exit(1);
     });
 db.Specialty.deleteMany({})
-    .then(() => db.Cuisine.insertMany(cuisineSeed))
+    .then(() => db.Specialty.insertMany(specialtySeed))
     .then(data => {
-        console.log(data.length + " cuisine records inserted!");
+        console.log(data.length + " specilaty records inserted!");
         process.exit(0);
     })
     .catch(err => {

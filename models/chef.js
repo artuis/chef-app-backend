@@ -8,7 +8,7 @@ const chefSchema = new Schema({
     },
     bio : { type: String },
     cuisine : [
-        { 
+        {
             type: [Schema.Types.ObjectId],
             ref: "Cuisine"
         }
