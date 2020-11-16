@@ -1,31 +1,29 @@
 const db = require("../models")
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
 //TODO : CREATE, UPDATE, DELETE
 //FIND by cuisine type, specialty, service type
 //FIND by location
 
 //TODO : 
-
-module.exports = {
-    checkAuthStatus: request => {
-        console.log(request.headers);
-        if (!request.headers.authorization) {
+const checkAuthStatus = request => {
+    if (!request.headers.authorization) {
+        return false
+    }
+    const token = request.headers.authorization.split(" ")[1]
+    const loggedInUser = jwt.verify(token, 'secretString', (err, data) => {
+        if (err) {
             return false
         }
-        const token = request.headers.authorization.split(" ")[1]
-        console.log(token);
-        const loggedInUser = jwt.verify(token, 'secretString', (err, data) => {
-            if (err) {
-                return false
-            }
-            else {
-                return data
-            }
-        });
-        console.log(loggedInUser)
-        return loggedInUser
-    },
+        else {
+            return data
+        }
+    });
+    return loggedInUser
+}
+
+module.exports = {
     findAll: (req, res) => {
         db.Chef
             .find(req.query)
@@ -37,7 +35,11 @@ module.exports = {
     },
     findByCuisine: (req, res) => {
         db.Chef
-            .find({ "cuisine._id": req.params.id })
+            .find({ 
+                cuisine : {
+                    $in : mongoose.Types.ObjectId(req.params.id)
+                } 
+            })
             .populate("cuisine")
             .populate("specialty")
             .sort({ name: 1 })
@@ -53,14 +55,37 @@ module.exports = {
             if (!result) {
                 db.Chef
                     .create(req.body)
-                    .then(dbModel => res.json(dbModel))
+                    .then(dbModel => {
+                        const userTokenInfo = {
+                            username: foundUser.username,
+                            _id: foundUser._id,
+                            first: foundUser.first,
+                            last : foundUser.last
+                        }
+                        const token = jwt.sign(userTokenInfo, 'secretString', { expiresIn: "2h" });
+                        res.status(200).json({ token: token })
+                    })
                     .catch(err => res.status(422).json(err));
-            }
-            else{
+            } else {
                 res.status(422).send("user already exists");
             }
             }
         )
+    },
+    getCurrentProf: (req, res) => {
+        const loggedInUser = checkAuthStatus(req);
+        if (!loggedInUser) {
+            res.status(401).send("NOT LOGGED IN")
+        } else {
+            db.Chef
+                .findById(mongoose.Types.ObjectId(loggedInUser._id))
+                .select("-password")
+                .then(dbModel => {
+                    res.status(200).json(dbModel);
+                })
+                .catch(err => res.status(422).json(err));
+        }
+
     },
     login: (req, res) => {
         db.Chef.findOne({ username: req.body.username }, function (err, foundUser) {
@@ -69,7 +94,8 @@ module.exports = {
                     const userTokenInfo = {
                         username: foundUser.username,
                         _id: foundUser._id,
-                        name: foundUser.first + " " + foundUser.last
+                        first: foundUser.first,
+                        last : foundUser.last
                     }
                     const token = jwt.sign(userTokenInfo, 'secretString', { expiresIn: "2h" });
                     res.status(200).json({ token: token })
@@ -80,5 +106,20 @@ module.exports = {
                 res.status(404).send("USER NOT FOUND");
             }
         });
+    },
+    update: function (req, res) {
+        const loggedInUser = checkAuthStatus(req);
+        if (!loggedInUser) {
+            res.status(401).send("NOT LOGGED IN")
+        } else {
+            db.Chef.findOne({ username : req.body.username })
+                .then(foundUser => {
+                    for (const modified in req.body) {
+                        foundUser[modified] = req.body[modified];
+                    }
+                    foundUser.save();
+                    res.status(200).send("saved changes")
+                })
+        }
     }
 }

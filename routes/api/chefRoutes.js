@@ -1,6 +1,9 @@
 const router = require("express").Router();
 const chefController = require("../../controllers/chefController")
 
+router.route("/profile")
+    .get(chefController.getCurrentProf)
+
 router.route("/")
     .get(chefController.findAll)
     .post(chefController.create);
@@ -10,5 +13,8 @@ router.route("/cuisine/:id")
 
 router.route("/login")
     .post(chefController.login);
+
+router.route("/update")
+    .put(chefController.update);
 
 module.exports = router;
