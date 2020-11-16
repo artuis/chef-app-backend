@@ -20,6 +20,8 @@ module.exports = {
     findByCuisine: (req, res) => {
         db.Chef
             .find({ "cuisine._id": req.params.id })
+            .populate("cuisine")
+            .populate("specialty")
             .sort({ name: 1 })
             .then(dbModel => res.json(dbModel))
             .catch(err => res.status(422).json(err));
