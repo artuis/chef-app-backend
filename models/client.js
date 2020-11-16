@@ -7,7 +7,19 @@ const clientSchema = new Schema({
         type : Map,
         of : String
     },
-    location : { type: String, required: true}
+    location : { type: String, required: true},
+    currentChefId : [
+        { 
+            type: [Schema.Types.ObjectId],
+            ref: "Chef"
+        }
+    ],
+    pastChefId : [
+        { 
+            type: [Schema.Types.ObjectId],
+            ref: "Chef"
+        }
+    ]
 })
 
 const Client = mongoose.model("Client", clientSchema);
