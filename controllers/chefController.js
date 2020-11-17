@@ -9,18 +9,18 @@ const mongoose = require("mongoose");
 //TODO : 
 const checkAuthStatus = request => {
     if (!request.headers.authorization) {
-        return false
+        return false;
     }
     const token = request.headers.authorization.split(" ")[1]
     const loggedInUser = jwt.verify(token, 'secretString', (err, data) => {
         if (err) {
-            return false
+            return false;
         }
         else {
-            return data
+            return data;
         }
     });
-    return loggedInUser
+    return loggedInUser;
 }
 
 module.exports = {
@@ -139,5 +139,34 @@ module.exports = {
                 res.status(200).json(foundChef.photos)
             })
             .catch(err => res.status(422).json(err));
+    },
+    addCuisine: (req, res) => {
+        const loggedInUser = checkAuthStatus(req);
+        if (!loggedInUser) {
+            res.status(401).send("NOT LOGGED IN")
+        } else {
+            db.Chef.findById(mongoose.Types.ObjectId(loggedInUser._id))
+                .then(foundChef => {
+                    foundChef.cuisine.push(mongoose.Types.ObjectId(req.params.id))
+                    foundChef.save();
+                    res.status(200).send("saved changes")
+                })
+                .catch(err => res.status(422).json(err));
+        }
+    },
+    removeCuisine: (req, res) => {
+        const loggedInUser = checkAuthStatus(req);
+        if (!loggedInUser) {
+            res.status(401).send("NOT LOGGED IN")
+        } else {
+            db.Chef.findById(mongoose.Types.ObjectId(loggedInUser._id))
+                .then(foundChef => {
+                    const cuisineIndex = foundChef.cuisine.indexOf(mongoose.Types.ObjectId(req.params.id))
+                    foundChef.cuisine.splice(cuisineIndex, 1);
+                    foundChef.save();
+                    res.status(200).send("saved changes")
+                })
+                .catch(err => res.status(422).json(err));
+        }
     }
 }

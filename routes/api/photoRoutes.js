@@ -6,8 +6,8 @@ router.route("/")
     .post(photoController.upload);
 
 router.route("/:id")
-    .get(photoController.findById);
-
-    
+    .get(photoController.findById)
+    .delete(photoController.delete)
+    .put(photoController.update);
 
 module.exports = router;
