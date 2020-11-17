@@ -13,6 +13,7 @@ const chefSchema = new Schema({
     first: { type: String, required: true, trim: true },
     last: { type: String, required: true, trim: true },
 
+    profilePic : { type: String },
     bio : { type: String },
     cuisine : [
         {
@@ -45,6 +46,12 @@ const chefSchema = new Schema({
         { 
             type: [Schema.Types.ObjectId],
             ref: "Client"
+        }
+    ],
+    photos : [
+        {
+            type: [Schema.Types.ObjectId],
+            ref: "Photo"
         }
     ]
 });
