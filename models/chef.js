@@ -5,14 +5,11 @@ bcrypt = require('bcrypt'),
 SALT_WORK_FACTOR = 10;
 
 const chefSchema = new Schema({
-/*     name : { 
-        first: { type: String, required: true, trim: true },
-        last: { type: String, required: true, trim: true }
-    }, */
 
     first: { type: String, required: true, trim: true },
     last: { type: String, required: true, trim: true },
 
+    profilePic : { type: String },
     bio : { type: String },
     cuisine : [
         {
@@ -45,6 +42,12 @@ const chefSchema = new Schema({
         { 
             type: [Schema.Types.ObjectId],
             ref: "Client"
+        }
+    ],
+    photos : [
+        {
+            type: [Schema.Types.ObjectId],
+            ref: "Photo"
         }
     ]
 });

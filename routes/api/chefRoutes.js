@@ -5,10 +5,29 @@ router.route("/")
     .get(chefController.findAll)
     .post(chefController.create);
 
+router.route("/addcuisine/:id")
+    .put(chefController.addCuisine);
+
+router.route("/removecuisine/:id")
+    .put(chefController.removeCuisine);
+
+router.route("/:id")
+    .get(chefController.findById);
+
+router.route("/profile")
+    .get(chefController.getCurrentProf)
+
 router.route("/cuisine/:id")
     .get(chefController.findByCuisine);
 
+
 router.route("/login")
     .post(chefController.login);
+
+router.route("/update")
+    .put(chefController.update);
+
+router.route("/:id/photos")
+    .get(chefController.getPhotos);
 
 module.exports = router;

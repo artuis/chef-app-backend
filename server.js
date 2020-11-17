@@ -1,6 +1,5 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const path = require("path");
 const routes = require("./routes");
 const cors = require("cors");
 
@@ -19,10 +18,6 @@ app.use(cors());
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
-// if (process.env.NODE_ENV === "production") {
-//     app.use(express.static("client/build"));
-// }
 
 app.use(routes);
 
