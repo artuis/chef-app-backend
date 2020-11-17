@@ -6,10 +6,14 @@ const photoSchema = new Schema({
     title : { type: String, required: true },
     description : { type: String },
     chefId : { 
-        type: [Schema.Types.ObjectId],
-        ref: "Chef"
+        type: Schema.Types.ObjectId,
+        ref: "Chef",
+        required: true
     },
     tags : [{ type: String }]
+},
+{
+    timestamps : true
 })
 
 const Photo = mongoose.model("Photo", photoSchema);
