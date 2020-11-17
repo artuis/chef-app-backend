@@ -27,6 +27,7 @@ module.exports = {
     findAll: (req, res) => {
         db.Chef
             .find(req.query)
+            .select("-password")
             .populate("cuisine")
             .populate("specialty")
             .sort({ name: 1 })
@@ -40,12 +41,18 @@ module.exports = {
                     $in : mongoose.Types.ObjectId(req.params.id)
                 } 
             })
+            .select("-password")
             .populate("cuisine")
             .populate("specialty")
             .sort({ name: 1 })
             .then(dbModel => res.json(dbModel))
             .catch(err => res.status(422).json(err));
         
+    },
+    findById: (req, res) => {
+        db.Chef
+            .findById(mongoose.Types.ObjectId(req.params.id))
+            .pup
     },
     create: function (req, res) {
         
@@ -110,7 +117,7 @@ module.exports = {
             }
         });
     },
-    update: function (req, res) {
+    update: (req, res) => {
         const loggedInUser = checkAuthStatus(req);
         if (!loggedInUser) {
             res.status(401).send("NOT LOGGED IN")
@@ -125,7 +132,7 @@ module.exports = {
                 })
         }
     },
-    getPhotos: function (req, res) {
+    getPhotos: (req, res) => {
         db.Chef.findById(mongoose.Types.ObjectId(req.params.id))
             .populate("photos")
             .then(foundChef => {

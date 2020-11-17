@@ -7,7 +7,15 @@ module.exports = {
         db.Photo
             .create(req.body)
             .then(photo => {
-                res.status(200).json(photo);
+                console.log(photo);
+                db.Chef.findById(photo.chefId)
+                    .then(chef => {
+                        console.log(chef.photos);
+                        chef.photos.push(photo._id);
+                        chef.save();
+                        res.status(200).json(photo);
+                    })
+                    .catch(err => res.status(422).json(err));    
             })
             .catch(err => res.status(422).json(err));
     },
