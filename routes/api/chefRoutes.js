@@ -5,10 +5,10 @@ router.route("/")
     .get(chefController.findAll)
     .post(chefController.create);
 
-router.route("/addcuisine")
+router.route("/addcuisine/:id")
     .put(chefController.addCuisine);
 
-router.route("/removecuisine")
+router.route("/removecuisine/:id")
     .put(chefController.removeCuisine);
 
 router.route("/:id")
