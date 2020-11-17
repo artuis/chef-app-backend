@@ -12,7 +12,7 @@ const checkAuthStatus = request => {
         return false;
     }
     const token = request.headers.authorization.split(" ")[1]
-    const loggedInUser = jwt.verify(token, 'secretString', (err, data) => {
+    const loggedInUser = jwt.verify(token, process.env.JWT_SECRET || 'secretString', (err, data) => {
         if (err) {
             return false;
         }
@@ -71,7 +71,7 @@ module.exports = {
                             first: foundUser.first,
                             last : foundUser.last
                         }
-                        const token = jwt.sign(userTokenInfo, 'secretString', { expiresIn: "2h" });
+                        const token = jwt.sign(userTokenInfo, process.env.JWT_SECRET || 'secretString', { expiresIn: "2h" });
                         res.status(200).json({ token: token })
                     })
                     .catch(err => res.status(422).json(err));
@@ -106,7 +106,7 @@ module.exports = {
                         first: foundUser.first,
                         last : foundUser.last
                     }
-                    const token = jwt.sign(userTokenInfo, 'secretString', { expiresIn: "2h" });
+                    const token = jwt.sign(userTokenInfo, process.env.JWT_SECRET || 'secretString', { expiresIn: "2h" });
                     res.status(200).json({ token: token })
                 } else {
                     res.status(403).send("wrong password")
