@@ -10,6 +10,9 @@ const photoSchema = new Schema({
         ref: "Chef"
     },
     tags : [{ type: String }]
+},
+{
+    timestamps : true
 })
 
 const Photo = mongoose.model("Photo", photoSchema);

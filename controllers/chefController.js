@@ -35,7 +35,7 @@ module.exports = {
     },
     findByCuisine: (req, res) => {
         db.Chef
-            .find({ 
+            .find({
                 cuisine : {
                     $in : mongoose.Types.ObjectId(req.params.id)
                 } 
@@ -45,6 +45,7 @@ module.exports = {
             .sort({ name: 1 })
             .then(dbModel => res.json(dbModel))
             .catch(err => res.status(422).json(err));
+        
     },
     create: function (req, res) {
         
@@ -52,6 +53,8 @@ module.exports = {
 
         db.Chef.exists({ username: req.body.username }, function (err, result) {
             //res.send(result);
+            req.body.cuisine = req.body.cuisine.map(e => mongoose.Types.ObjectId(e));
+            req.body.specialty = req.body.specialty.map(e => mongoose.Types.ObjectId(e));
             if (!result) {
                 db.Chef
                     .create(req.body)
@@ -121,5 +124,13 @@ module.exports = {
                     res.status(200).send("saved changes")
                 })
         }
+    },
+    getPhotos: function (req, res) {
+        db.Chef.findById(mongoose.Types.ObjectId(req.params.id))
+            .populate("photos")
+            .then(foundChef => {
+                res.status(200).json(foundChef.photos)
+            })
+            .catch(err => res.status(422).json(err));
     }
 }

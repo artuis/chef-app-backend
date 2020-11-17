@@ -17,4 +17,7 @@ router.route("/login")
 router.route("/update")
     .put(chefController.update);
 
+router.route("/:id/photos")
+    .get(chefController.getPhotos);
+
 module.exports = router;
