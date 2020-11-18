@@ -48,23 +48,41 @@ module.exports = {
             .catch(err => res.status(422).json(err));
         
     },
+    findByUsername: (req, res) => {
+        db.Chef
+            .findOne({username_lower : req.params.username})
+            .select("-password")
+            .populate("cuisine")
+            .populate("specialty")
+            .populate("photos")
+            .then(dbModel => res.json(dbModel))
+            .catch(err => res.status(422).json(err));
+    },
     findById: (req, res) => {
         db.Chef
             .findById(mongoose.Types.ObjectId(req.params.id))
-            .pup
+            .select("-password")
+            .populate("cuisine")
+            .populate("specialty")
+            .populate("photos")
+            .then(dbModel => res.json(dbModel))
+            .catch(err => res.status(422).json(err));
     },
     create: function (req, res) {
         
         // res.send(db.Chef.exists({ username: req.body.username }));
-
-        db.Chef.exists({ username: req.body.username }, function (err, result) {
+        req.body.username_lower = req.body.username.toLowerCase();
+        db.Chef.exists({ $or: [ 
+            { username: req.body.username }, 
+            { username_lower: req.body.username_lower } 
+        ] }, function (err, result) {
             //res.send(result);
-            req.body.cuisine = req.body.cuisine.map(e => mongoose.Types.ObjectId(e));
-            req.body.specialty = req.body.specialty.map(e => mongoose.Types.ObjectId(e));
+            req.body.cuisine = req.body.cuisine ? req.body.cuisine.map(e => mongoose.Types.ObjectId(e)) : [];
+            req.body.specialty = req.body.specialty ? req.body.specialty.map(e => mongoose.Types.ObjectId(e)) : [];
             if (!result) {
                 db.Chef
                     .create(req.body)
-                    .then(dbModel => {
+                    .then(foundUser => {
                         const userTokenInfo = {
                             username: foundUser.username,
                             _id: foundUser._id,
