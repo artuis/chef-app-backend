@@ -31,6 +31,7 @@ const chefSchema = new Schema({
     },
     zipcode : { type : String },
     username : { type : String },
+    username_lower : { type : String},
     password : { type : String },
     servedLocations : { type : [String] },
     CurrentClientId : [
