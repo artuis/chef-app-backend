@@ -24,6 +24,10 @@ On GET, will return a list of chefs which have the cuisine in their profile. The
 ```
 On GET, finds a specific chef by their MongoDB ObjectId
 ```
+{API Server URL}/api/chef/username/:username
+```
+On GET, finds a specific chef by their username
+```
 {API Server URL}/api/chef/login
 ```
 On POST, checks database for existing user login credentials. A JWT is returned on successful log-in, and is required to access a number of routes.
