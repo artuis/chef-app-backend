@@ -29,6 +29,7 @@ const chefSchema = new Schema({
         type : Map,
         of : String
     },
+    zipcode : { type : String },
     username : { type : String },
     password : { type : String },
     servedLocations : { type : [String] },
