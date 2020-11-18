@@ -14,6 +14,9 @@ router.route("/removecuisine/:id")
 router.route("/:id")
     .get(chefController.findById);
 
+router.route("/username/:username")
+    .get(chefController.findByUsername);
+
 router.route("/profile")
     .get(chefController.getCurrentProf)
 
