@@ -20,7 +20,11 @@ const checkAuthStatus = request => {
 
 module.exports = {
     upload: (req, res) => {
-        req.body.chefId = mongoose.Types.ObjectId(req.body.chefId);
+        const loggedInUser = checkAuthStatus(req);
+        if (!loggedInUser) {
+            res.status(401).send("NOT LOGGED IN")
+        } else {
+        req.body.chefId = mongoose.Types.ObjectId(loggedInUser._id)
         db.Photo
             .create(req.body)
             .then(photo => {
@@ -35,6 +39,7 @@ module.exports = {
                     .catch(err => res.status(422).json(err));    
             })
             .catch(err => res.status(422).json(err));
+        }
     },
     findAll: (req, res) => {
         db.Photo
@@ -50,7 +55,6 @@ module.exports = {
             .catch(err => res.status(422).json(err));
     },
     update: (req, res) => {
-        console.log("update");
         const loggedInUser = checkAuthStatus(req);
         if (!loggedInUser) {
             res.status(401).send("NOT LOGGED IN")
