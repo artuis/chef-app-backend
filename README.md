@@ -58,7 +58,7 @@ On PUT, will remove a cuisine depending on ```:id```, which is the MongoDB Objec
 ```
 On GET, will send all photos in database
 
-ON POST, will create new references to the photo in database. Please see [Photo Schema](models/photo.js) to see required request fields.
+ON POST, will create new references to the photo in database. Please see [Photo Schema](models/photo.js) to see required request fields. Make sure to attach JWT in header.
 ```
 {API Server URL}/api/photo/:id
 ```
