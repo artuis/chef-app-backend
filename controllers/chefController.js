@@ -157,7 +157,7 @@ module.exports = {
         if (!loggedInUser) {
             res.status(401).send("NOT LOGGED IN")
         } else {
-            db.Chef.findOne({ username: req.body.username })
+            db.Chef.findById(mongoose.Types.ObjectId(loggedInUser._id))
                 .then(foundUser => {
                     for (const modified in req.body) {
                         foundUser[modified] = req.body[modified];

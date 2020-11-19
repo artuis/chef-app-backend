@@ -11,9 +11,6 @@ router.route("/addcuisine/:id")
 router.route("/removecuisine/:id")
     .put(chefController.removeCuisine);
 
-router.route("/:id")
-    .get(chefController.findById);
-
 router.route("/username/:username")
     .get(chefController.findByUsername);
 
@@ -26,7 +23,6 @@ router.route("/cuisine/:id")
 router.route("/zip/:zip")
     .get(chefController.findByZip);
 
-
 router.route("/login")
     .post(chefController.login);
 
@@ -35,5 +31,8 @@ router.route("/update")
 
 router.route("/:id/photos")
     .get(chefController.getPhotos);
+
+router.route("/:id")
+    .get(chefController.findById);
 
 module.exports = router;
