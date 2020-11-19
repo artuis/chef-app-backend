@@ -2,6 +2,7 @@ const db = require("../models")
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
+const axios = require("axios");
 //TODO : CREATE, UPDATE, DELETE
 //FIND by cuisine type, specialty, service type
 //FIND by location
@@ -36,9 +37,9 @@ module.exports = {
     findByCuisine: (req, res) => {
         db.Chef
             .find({
-                cuisine : {
-                    $in : mongoose.Types.ObjectId(req.params.id)
-                } 
+                cuisine: {
+                    $in: mongoose.Types.ObjectId(req.params.id)
+                }
             })
             .select("-password")
             .populate("cuisine")
@@ -46,11 +47,11 @@ module.exports = {
             .sort({ name: 1 })
             .then(dbModel => res.json(dbModel))
             .catch(err => res.status(422).json(err));
-        
+
     },
     findByUsername: (req, res) => {
         db.Chef
-            .findOne({username_lower : req.params.username})
+            .findOne({ username_lower: req.params.username })
             .select("-password")
             .populate("cuisine")
             .populate("specialty")
@@ -68,14 +69,31 @@ module.exports = {
             .then(dbModel => res.json(dbModel))
             .catch(err => res.status(422).json(err));
     },
+    findByZip: (req, res) => {
+        axios.get(`https://www.zipcodeapi.com/rest/j5wCTULxju7AufBvlfI14TbyCTUkUuNb9OJfJ83Pwne5nHUcyzbCAyQplaUKABSw/radius.json/${req.params.zip}/30/mile`)
+            .then(result => {
+                const zipCodes = result.data.zip_codes.map( elm => { elm.zip_code } )
+                db.Chef
+                    .find({ zip: { $in: zipCodes } })
+                    .select("-password")
+                    .populate("cuisine")
+                    .populate("specialty")
+                    .populate("photos")
+                    .then(dbModel => res.json(dbModel))
+                    .catch(err => res.status(422).json(err));
+
+            })
+    },
     create: function (req, res) {
-        
+
         // res.send(db.Chef.exists({ username: req.body.username }));
         req.body.username_lower = req.body.username.toLowerCase();
-        db.Chef.exists({ $or: [ 
-            { username: req.body.username }, 
-            { username_lower: req.body.username_lower } 
-        ] }, function (err, result) {
+        db.Chef.exists({
+            $or: [
+                { username: req.body.username },
+                { username_lower: req.body.username_lower }
+            ]
+        }, function (err, result) {
             //res.send(result);
             req.body.cuisine = req.body.cuisine ? req.body.cuisine.map(e => mongoose.Types.ObjectId(e)) : [];
             req.body.specialty = req.body.specialty ? req.body.specialty.map(e => mongoose.Types.ObjectId(e)) : [];
@@ -87,7 +105,7 @@ module.exports = {
                             username: foundUser.username,
                             _id: foundUser._id,
                             first: foundUser.first,
-                            last : foundUser.last
+                            last: foundUser.last
                         }
                         const token = jwt.sign(userTokenInfo, process.env.JWT_SECRET || 'secretString', { expiresIn: "2h" });
                         res.status(200).json({ token: token })
@@ -96,7 +114,7 @@ module.exports = {
             } else {
                 res.status(422).send("user already exists");
             }
-            }
+        }
         )
     },
     getCurrentProf: (req, res) => {
@@ -122,13 +140,13 @@ module.exports = {
                         username: foundUser.username,
                         _id: foundUser._id,
                         first: foundUser.first,
-                        last : foundUser.last
+                        last: foundUser.last
                     }
                     const token = jwt.sign(userTokenInfo, process.env.JWT_SECRET || 'secretString', { expiresIn: "2h" });
                     res.status(200).json({ token: token })
                 } else {
                     res.status(403).send("wrong password")
-                } 
+                }
             } else {
                 res.status(404).send("USER NOT FOUND");
             }
@@ -139,7 +157,7 @@ module.exports = {
         if (!loggedInUser) {
             res.status(401).send("NOT LOGGED IN")
         } else {
-            db.Chef.findOne({ username : req.body.username })
+            db.Chef.findOne({ username: req.body.username })
                 .then(foundUser => {
                     for (const modified in req.body) {
                         foundUser[modified] = req.body[modified];
