@@ -108,7 +108,7 @@ module.exports = {
                             last: foundUser.last
                         }
                         const token = jwt.sign(userTokenInfo, process.env.JWT_SECRET || 'secretString', { expiresIn: "2h" });
-                        res.status(200).json({ token: token })
+                        res.status(200).json({ token: token, ...userTokenInfo })
                     })
                     .catch(err => res.status(422).json(err));
             } else {
@@ -143,7 +143,7 @@ module.exports = {
                         last: foundUser.last
                     }
                     const token = jwt.sign(userTokenInfo, process.env.JWT_SECRET || 'secretString', { expiresIn: "2h" });
-                    res.status(200).json({ token: token })
+                    res.status(200).json({ token: token, ...userTokenInfo })
                 } else {
                     res.status(403).send("wrong password")
                 }
