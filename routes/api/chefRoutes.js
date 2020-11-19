@@ -20,7 +20,6 @@ router.route("/profile")
 router.route("/cuisine/:id")
     .get(chefController.findByCuisine);
 
-
 router.route("/login")
     .post(chefController.login);
 
