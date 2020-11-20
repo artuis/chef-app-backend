@@ -1,6 +1,7 @@
 const db = require("../models");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
+const { getPhotos } = require("./chefController");
 
 const checkAuthStatus = request => {
     if (!request.headers.authorization) {
@@ -89,11 +90,12 @@ module.exports = {
                                 const photoIndex = foundChef.photos.indexOf(photo._id);
                                 foundChef.photos.splice(photoIndex, 1);
                                 foundChef.save();
+                                photo.remove(err => {
+                                    if (err) res.status(422).json(err)
+                                    getPhotos(req, res);
+                                })
                             })
-                        photo.remove(err => {
-                            if (err) res.status(422).json(err)
-                            res.status(200).send("photo deleted");
-                        })
+                        
                     } else {
                         res.status(422).send("error deleting photo");
                     }
