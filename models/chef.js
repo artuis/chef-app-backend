@@ -24,7 +24,6 @@ const chefSchema = new Schema({
         }
     ],
     restaurants : [{ type : String, required: true }],
-    bioPic : { type : String },
     contactInfo : {
         type : Map,
         of : String
