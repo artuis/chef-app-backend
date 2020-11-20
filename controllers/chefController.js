@@ -70,11 +70,13 @@ module.exports = {
             .catch(err => res.status(422).json(err));
     },
     findByZip: (req, res) => {
-        axios.get(`https://www.zipcodeapi.com/rest/j5wCTULxju7AufBvlfI14TbyCTUkUuNb9OJfJ83Pwne5nHUcyzbCAyQplaUKABSw/radius.json/${req.params.zip}/30/mile`)
+        const apiKey = process.env.ZIPBASE_API_KEY;
+
+        axios.get(`https://app.zipcodebase.com/api/v1/radius?apikey=${apiKey}&code=${req.params.zip}&radius=50&country=us`)
             .then(result => {
-                const zipCodes = result.data.zip_codes.map( elm => { elm.zip_code } )
+                const zipCodes = result.data.results.map( elm => { return elm.code } )
                 db.Chef
-                    .find({ zip: { $in: zipCodes } })
+                    .find({ zipcode: { $in: zipCodes } })
                     .select("-password")
                     .populate("cuisine")
                     .populate("specialty")
