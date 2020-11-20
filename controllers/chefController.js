@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 const axios = require("axios");
+const { findById } = require("../models/chef");
 //TODO : CREATE, UPDATE, DELETE
 //FIND by cuisine type, specialty, service type
 //FIND by location
@@ -158,12 +159,13 @@ module.exports = {
             res.status(401).send("NOT LOGGED IN")
         } else {
             db.Chef.findById(mongoose.Types.ObjectId(loggedInUser._id))
+                .select("-password")
                 .then(foundUser => {
                     for (const modified in req.body) {
                         foundUser[modified] = req.body[modified];
                     }
                     foundUser.save();
-                    res.status(200).send("saved changes")
+                    res.status(200).json(foundUser);
                 })
         }
     },
@@ -181,10 +183,12 @@ module.exports = {
             res.status(401).send("NOT LOGGED IN")
         } else {
             db.Chef.findById(mongoose.Types.ObjectId(loggedInUser._id))
+                .select("-password")
                 .then(foundChef => {
                     foundChef.cuisine.push(mongoose.Types.ObjectId(req.params.id))
                     foundChef.save();
-                    res.status(200).send("saved changes")
+                    req.params.id = loggedInUser._id
+                    findById(req, res);
                 })
                 .catch(err => res.status(422).json(err));
         }
@@ -199,7 +203,7 @@ module.exports = {
                     const cuisineIndex = foundChef.cuisine.indexOf(mongoose.Types.ObjectId(req.params.id))
                     foundChef.cuisine.splice(cuisineIndex, 1);
                     foundChef.save();
-                    res.status(200).send("saved changes")
+                    findById(loggedInUser._id);
                 })
                 .catch(err => res.status(422).json(err));
         }
