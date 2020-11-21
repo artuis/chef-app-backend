@@ -50,7 +50,11 @@ const chefSchema = new Schema({
             type: [Schema.Types.ObjectId],
             ref: "Photo"
         }
-    ]
+    ],
+    signatureDish : { 
+        type: [Schema.Types.ObjectId],
+        ref: "Photo"
+    }
 });
 
 chefSchema.pre('save', function(next) {
