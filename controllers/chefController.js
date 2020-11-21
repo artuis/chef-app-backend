@@ -167,7 +167,10 @@ module.exports = {
                         foundUser[modified] = req.body[modified];
                     }
                     foundUser.save();
-                    res.status(200).json(foundUser);
+                    res.status(200).json(foundUser
+                        .populate("cuisine")
+                        .populate("specialty")
+                        .populate("photos"));
                 })
         }
     },
