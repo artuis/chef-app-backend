@@ -32,6 +32,7 @@ module.exports = {
             .select("-password")
             .populate("cuisine")
             .populate("specialty")
+            .populate("photos")
             .then(dbModel => res.json(dbModel))
             .catch(err => res.status(422).json(err));
     },
