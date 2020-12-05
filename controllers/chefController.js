@@ -118,8 +118,7 @@ module.exports = {
             } else {
                 res.status(422).send("user already exists");
             }
-        }
-        )
+        });
     },
     getCurrentProf: (req, res) => {
         const loggedInUser = checkAuthStatus(req);

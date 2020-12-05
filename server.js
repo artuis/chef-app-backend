@@ -9,7 +9,7 @@ const app = express();
 
 // app.use(cors(
 //     {
-//         origin : "http://localhost:3000",
+//         origin : "https://experience-indulgence.herokuapp.com",
 //         optionsSuccessStatus: 200
 //     }
 // ));
