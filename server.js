@@ -7,14 +7,14 @@ require("dotenv").config()
 const PORT = process.env.PORT || 8080;
 const app = express();
 
-app.use(cors(
-    {
-        origin : "https://experience-indulgence.herokuapp.com",
-        optionsSuccessStatus: 200
-    }
-));
+// app.use(cors(
+//     {
+//         origin : "https://experience-indulgence.herokuapp.com",
+//         optionsSuccessStatus: 200
+//     }
+// ));
 
-// app.use(cors());
+app.use(cors());
 
 
 app.use(express.urlencoded({ extended: true }));
