@@ -52,6 +52,24 @@ On PUT, will add a cuisine depending on ```:id```, which is the MongoDB ObjectId
 ```
 On PUT, will remove a cuisine depending on ```:id```, which is the MongoDB ObjectId associated with the cuisine.
 
+### Client Routes
+```
+{API Server URL}/api/client/
+```
+On GET, will return client information. Requires JWT in header.
+
+On POST, will create a new client in database. Note that in the model, only the parameters "username," "password," "first," "last," are available, but extra parameters of "street," "zipcode," "city," and "state" are required as well. Returns JWT on successful creation and other user info.
+
+On PUT, will update client's information using same parameters as POST request
+```
+{API Server URL}/api/client/login
+```
+On POST, will return JWT pertaining to client's login information.
+```
+{API Server URL}/api/client/:id
+```
+On GET, will return client information pertaining to ```:id```, which is the MongoDB ObjectId associated with the client
+
 ### Photo Routes
 ```
 {API Server URL}/api/photo
